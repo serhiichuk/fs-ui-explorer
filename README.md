@@ -1,7 +1,7 @@
 # (fs-explorer-ui) Node Terminal File Explorer
 
 A simple package for exploring directories in terminal around your project.
-![alt text][/src/preview.gif]
+![alt text][src/preview.gif]
 
 ### Install
 ```javascript
@@ -14,7 +14,7 @@ const feu = require('fs-explorer-ui');
 
 // Default options
 new feu({
-	root: __dirname, // String, start path to explore
+    root: __dirname, // String, start path to explore
     do: file => console.log('Your File:', file) // Function, call if you choose file
 }).run();
 ```
