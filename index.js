@@ -1,93 +1,114 @@
 const fs = require('fs');
-const readline = require('readline');
 const inquirer = require('inquirer');
-
+const stripAnsi = require('strip-ansi');
 
 class fsUIExplorer {
-	constructor(options) {
-		this.root = options.root;
-		this.do = options.do;
-		this.currPath = this.root;
-	}
+    constructor(options = fsUIExplorer.getDefaultOptions()) {
+        this.root = __dirname;
+        this.do = options.do;
+        this._currPath = options.root;
+    }
 
-	readDir() {
-		// clear
-		console.log('\x1Bc');
-		
-		this.currDirList = fs.readdirSync(this.currPath);
-		// Add parent dir to currDirList if you not been in root dir
-		if (this.currPath.split('\\')[this.currPath.split('\\').length - 2] !== this.root.split('\\')[0]) {
-			this.currDirList.unshift(new inquirer.Separator('- - - - - - - -'));			
-			this.currDirList.unshift(this.currPath.split('\\')[this.currPath.split('\\').length - 2]);			
-		}
+    run() {
+        // clear terminal
+        console.log('\x1Bc');
 
-		const promptList = {
-			type: 'list',
-			name: 'next',
-			message: this.currPath,
-			choices: this.currDirList,
-			pageSize: 30
-		}
+        this.readDir();
+    }
 
-		inquirer.prompt(promptList)
-		.then(answer => {
-			// parent
-			if (answer.next === this.currDirList[0]) {
-				let parrentPath = this.currPath.split('\\');
-				parrentPath.pop();
-				this.currPath = parrentPath.join('\\');
-			} else { // child
-				this.currPath += `\\${answer.next}`;
-			}
-		})
-		.then(() => this.readDir());		
-	}
+    readDir() {
+        const path = this.currPath;
+        const dirList = this.currDirList;
+        const promptList = {
+            type: 'list',
+            name: 'next',
+            message: path,
+            choices: dirList,
+            pageSize: 30
+        };
 
-	run() {
-		// clear
-		console.log('\x1Bc');
+        inquirer.prompt(promptList)
+            .then(choice => {
 
-		
-		// readline.emitKeypressEvents(process.stdin);
-		// process.stdin.setRawMode(true);
-		// process.stdin.on('keypress', (str, key) => {
-		// 	if (key.ctrl && key.name === 'c') {
-		// 		process.exit(0);
-		// 	} else {
-		// 		// console.log(`You pressed the "${str}" key`);
-		// 		// console.log();
-		// 		// console.log(key);
-		// 		// console.log();
-		// 		if (key.name === 'right') this.menu();		
-		// 		// if (key.name === 'left') this.readDir();	
-		// 	}
-		// });
+                // Check if your choice is parent dir and you not been in root dir
+                const isParent = choice.next === dirList[0];
 
-		const rootDirList = {
-			type: 'list',
-			name: 'next',
-			message: this.root,
-			choices: fs.readdirSync(this.root),
-			pageSize: 30
-		}
+                if (isParent && path !== this.root) {
+                    let parrentPath = path.split('\\');
+                    parrentPath.pop();
+                    // go back dir
+                    this.currPath = parrentPath.join('\\');
+                } else {
+                    // go next dir
+                    this.currPath += stripAnsi(`\\${choice.next}`);
+                }
+            })
+    }
 
-		inquirer.prompt(rootDirList)
-		.then(answer => {
-			this.currPath += '\\' + answer.next; 
-		})
-		.then(() => this.readDir());		
-	}
+    // currPath
+    get currPath() {
+        return this._currPath;
+    }
 
-	menu() {
-		console.log('MENU\n', this.currPath)
-	}
+    set currPath(value) {
+        value = stripAnsi(value);
 
-	style() {
-		
-	}
+        /** Check if your choice is a Dir of File **/
+        if (fs.lstatSync(value).isDirectory()) {
+            // Dir
+            this._currPath = value ;
+
+            // clear terminal
+            console.log('\x1Bc');
+            this.readDir();
+        } else {
+            // File
+            this.do(value)
+        }
+
+
+
+    }
+
+    /** Get Current Directory List With Styling**/
+    get currDirList() {
+        let dirList = fs.readdirSync(this.currPath);
+        const path = this.currPath;
+        const rootDirName = this.root.split('\\').pop();
+        const prevDirName = path.split('\\')[path.split('\\').length - 1];
+        const isNextRootDir = prevDirName !== rootDirName;
+
+        dirList = dirList.map(dir => {
+            let dirPath = stripAnsi(`${path}\\${dir}`);
+
+            // ignore files Styling (node_modules || all files which first symbol is dot)
+            if (dir === 'node_modules' || /^\..*/.test(dir)) {
+                return `\x1b[31m${dir}\x1b[0m`
+            }
+            /** Styling Dir or File list item **/
+            if (fs.lstatSync(dirPath).isDirectory()) {
+                // Directory Styling
+                return `\x1b[32m${dir}\x1b[0m`
+            } else {
+                // File Styling
+                return `\x1b[4m${dir}\x1b[0m`
+            }
+        });
+
+        dirList.sort();
+
+        // Add parent dir to currDirList if you not been in root dir
+        if (isNextRootDir) dirList.unshift(`\x1b[7m${prevDirName}\x1b[0m`);
+
+        return dirList;
+    }
+
+    static getDefaultOptions() {
+        return {
+            root: __dirname,
+            do: file => console.log('Your File:', file)
+        }
+    }
 }
 
-new fsUIExplorer({
-	root: __dirname,
-	do: file => console.log(file)
-}).run()
+module.exports = fsUIExplorer;
