@@ -1,0 +1,15 @@
+{
+  "name": "fs-explorer-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "fs-ui": "node index.js",
+    "test": "test"
+  },
+  "author": "serhiichuk",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^4.0.1"
+  }
+}
