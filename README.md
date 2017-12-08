@@ -1,7 +1,7 @@
 # (fs-explorer-ui) Node Terminal File Explorer
 
 A simple package for exploring directories in terminal around your project.
-![alt text][src/preview.gif]
+![alt text](/src/preview.gif])
 
 ### Install
 ```javascript
