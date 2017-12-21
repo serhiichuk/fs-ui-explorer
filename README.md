@@ -11,20 +11,15 @@ $ npm install fs-explorer-ui
 ### Usage
 
 ```javascript
-const feu = require('fs-explorer-ui');
+const FileSystemExplorerUI = require('fs-explorer-ui');
 
-// Default options
-new feu({
-    root: __dirname, // String, start path to explore
-    do: file => console.log('Your File:', file) // Function, call if you choose file
-}).run();
+new FileSystemExplorerUI('D:\your\path') // optional default it's process.cwd()
+    .surf()
+    .then(filePath => {
+        console.log('You choose file', filePath)
+    });
 ```
 ##### Note!
 You can explore only your project directories
-
-#### Related
-
- * [inquirer](https://github.com/SBoudrias/Inquirer.js) for parse directories
- * [strip-ansi](https://github.com/chalk/strip-ansi) for removing ANSI codes where necessary
 
 This is [on GitHub](https://github.com/serhiichuk/fs-ui-explorer) so let me know if I've broken it somewhere.

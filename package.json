@@ -1,16 +1,29 @@
 {
   "name": "fs-explorer-ui",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "simple package for exploring directories in terminal around your project",
   "main": "index.js",
+  "homepage": "https://github.com/serhiichuk/fs-ui-explorer",
+  "keywords": [
+    "fs",
+    "ui",
+    "terminal",
+    "console",
+    "log",
+    "command-line",
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serhiichuk/fs-ui-explorer.git"
+  },
   "scripts": {
-    "fs-ui": "node index.js",
-    "test": "test"
+    "fs-ui": "node index-2.js",
   },
   "author": "serhiichuk",
   "license": "ISC",
   "dependencies": {
     "inquirer": "^4.0.1",
-    "strip-ansi": "^4.0.0"
+    "strip-ansi": "^4.0.0",
+    "chalk": "latest"
   }
 }
