@@ -10,14 +10,14 @@
     "terminal",
     "console",
     "log",
-    "command-line",
+    "command-line"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/serhiichuk/fs-ui-explorer.git"
   },
   "scripts": {
-    "fs-ui": "node index-2.js",
+    "fs-ui": "node index-2.js"
   },
   "author": "serhiichuk",
   "license": "ISC",
