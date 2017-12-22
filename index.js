@@ -15,20 +15,17 @@ const menuOptions = {
 
 module.exports = class FileSystemExplorerUI {
     constructor(startPath) {
-        this.do = false;
         this.root = process.cwd();
-        this.startPath = path.normalize(startPath) || this.root;
+        this.startPath = startPath ? path.normalize(startPath) : this.root;
         this._currPath = this.startPath;
         this._targetPath = '';
+        this.resolve = null;
     }
 
     surf() {
-        return new Promise((resolve, reject) => {
-            if (this.do) {
-                resolve(this.do);
-            } else {
-                this.showDirList();
-            }
+        return new Promise(resolve => {
+            this.resolve = resolve;
+            this.showDirList();
         })
     }
 
@@ -75,8 +72,7 @@ module.exports = class FileSystemExplorerUI {
             }
 
             if (choice.menu === 'do') {
-                this.do = true;
-                this.surf();
+                this.resolve(this.targetPath);
             }
         })
     }
@@ -148,4 +144,3 @@ module.exports = class FileSystemExplorerUI {
         return list;
     }
 };
-
