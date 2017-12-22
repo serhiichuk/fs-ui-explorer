@@ -120,22 +120,16 @@ module.exports = class FileSystemExplorerUI {
 
             // Styling Dir or File list item
             if (fs.lstatSync(dirPath).isDirectory())
-                return chalk.yellow(dir);
+                return chalk.yellowBright(dir);
 
             // Styling Dir or File list item
             if (fs.lstatSync(dirPath).isFile())
-                return chalk.bold(dir);
+                return chalk.whiteBright(dir);
 
             return dir
         });
 
-        list.sort((a, b) => {
-            if (a < b)
-                return 1;
-            if (a > b)
-                return -1;
-            return 0
-        });
+        list.sort();
 
         if (this.currPath === this.root)
             return list;

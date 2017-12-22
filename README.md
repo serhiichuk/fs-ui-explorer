@@ -15,7 +15,7 @@ const FileSystemExplorerUI = require('fs-explorer-ui');
 
 new FileSystemExplorerUI('D:\your\path') // optional default it's process.cwd()
     .surf()
-    .then(filePath => {
+    .then(filePath => { // Promise return adblosule path of the selected file
         console.log('You choose file', filePath)
     });
 ```
