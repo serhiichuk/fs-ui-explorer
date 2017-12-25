@@ -12,8 +12,9 @@ $ npm install fs-explorer-ui
 
 ```javascript
 const FileSystemExplorerUI = require('fs-explorer-ui');
+const message = 'This message will displayed above';
 
-new FileSystemExplorerUI('D:/your/path') // optional default it's process.cwd()
+new FileSystemExplorerUI('D:/your/path', message) // optional default it's process.cwd()
     .surf()
     .then(filePath => { // Promise return absolute path of the selected file
         console.log('You choose file', filePath)
