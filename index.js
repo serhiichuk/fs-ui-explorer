@@ -14,10 +14,10 @@ const menuOptions = {
 
 
 module.exports = class FileSystemExplorerUI {
-    constructor(startPath, message) {
+    constructor(options) {
         this.root = process.cwd();
-        this.startPath = startPath ? path.normalize(startPath) : this.root;
-        this.message = message;
+        this.startPath = options.startPath ? path.normalize(options.startPath) : this.root;
+        this.message = options.message;
         this._currPath = this.startPath;
         this._targetPath = '';
         this.resolve = null;
@@ -32,7 +32,7 @@ module.exports = class FileSystemExplorerUI {
 
     showDirList() {
         console.log('\x1Bc');
-        if (message) { console.log(this.message) };
+        if (this.message) { console.log(this.message) };
 
         const dirList = this.currDirList;
         inquirer.prompt({
@@ -55,7 +55,7 @@ module.exports = class FileSystemExplorerUI {
 
     showMenu() {
         console.log('\x1Bc');
-        if (message) { console.log(this.message) };
+        if (this.message) { console.log(this.message) };
 
         inquirer.prompt({
             type: 'list',
