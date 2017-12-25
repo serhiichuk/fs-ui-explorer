@@ -1,6 +1,6 @@
 {
   "name": "fs-explorer-ui",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "simple package for exploring directories in terminal around your project",
   "main": "index.js",
   "homepage": "https://github.com/serhiichuk/fs-ui-explorer",
