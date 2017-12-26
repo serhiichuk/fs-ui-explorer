@@ -18,12 +18,11 @@ module.exports = class FileSystemExplorerUI {
         this.root = process.cwd();
         this.startPath = options.startPath ? path.normalize(options.startPath) : this.root;
         this.message = options.message;
+        this.isolate = options.isolate || false;
         this._currPath = this.startPath;
         this._targetPath = '';
         this.resolve = null;
-    }
 
-    surf() {
         return new Promise(resolve => {
             this.resolve = resolve;
             this.showDirList();
@@ -31,8 +30,7 @@ module.exports = class FileSystemExplorerUI {
     }
 
     showDirList() {
-        console.log('\x1Bc');
-        if (this.message) { console.log(this.message) };
+        this.onRefreshUI();
 
         const dirList = this.currDirList;
         inquirer.prompt({
@@ -54,8 +52,7 @@ module.exports = class FileSystemExplorerUI {
     }
 
     showMenu() {
-        console.log('\x1Bc');
-        if (this.message) { console.log(this.message) };
+        this.onRefreshUI();
 
         inquirer.prompt({
             type: 'list',
@@ -78,6 +75,11 @@ module.exports = class FileSystemExplorerUI {
                 this.resolve(this.targetPath);
             }
         })
+    }
+
+    onRefreshUI() {
+        console.log('\x1Bc');
+        if (this.message) console.log(this.message);
     }
 
     get currPath() {
@@ -111,6 +113,7 @@ module.exports = class FileSystemExplorerUI {
     }
 
     get currDirList() {
+        const isDiskRoot = path.parse(this.currPath).root === path.parse(this.currPath).dir;
         let list = fs.readdirSync(this.currPath);
 
         /** Styling DirList **/
@@ -132,11 +135,13 @@ module.exports = class FileSystemExplorerUI {
             return dir
         });
 
+        /** Folders to top **/
         list.sort();
 
-        if (this.currPath === this.root)
-            return list;
+        /** Without Back Option ('../') **/
+        if (this.currPath === this.startPath && this.isolate || isDiskRoot) return list;
 
+        /** Add Back Option ('../') **/
         list.unshift(backOption);
         return list;
     }
